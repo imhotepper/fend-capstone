@@ -1,0 +1,23 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 2;
+}
+
+section {
+    max-width: 800px;
+    margin: 50px auto;
+}
+
+#results {
+    border-left: 10px solid green;
+    p {
+        font-size: 1.3em;
+        margin-bottom: 30px;
+        padding-left: 15px;
+    }
+}

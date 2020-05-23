@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Travel APP</title>
+
+</head>
+
+<body>
+
+    <header>
+        <h1>Travelling!</h1>
+    </header>
+
+    <main>
+        <section>
+            <form class="" onsubmit="return Client.handleSubmit(event)">
+                <input id="name" type="text" name="input" value="" placeholder="The city you want to go" required>
+                <input id="date" type="date" name="date" value="" placeholder="The city you want to go" required>
+                <input type="submit" name="" value="Forcast" onclick="return Client.handleSubmit(event)" onsubmit="return handleSubmit(event)">
+            </form>
+            <section>
+
+                <section>
+                    <strong id="title"></strong>
+                    <div id="results"></div>
+                </section>
+    </main>
+
+    <footer>
+        <p>This is a footer</p>
+    </footer>
+
+    <script>
+        // Check that service workers are supported
+        if ('serviceWorker' in navigator) {
+            // Use the window load event to keep the page load performant
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
+
+</body>
+
+</html>
