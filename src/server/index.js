@@ -37,8 +37,8 @@ var textapi = new AYLIENTextAPI({
 
 
 app.get('/', function(req, res) {
-    //res.sendFile(path.resolve('dist/index.html'))
-    res.sendFile(path.resolve('src/client/views/index.html'))
+    res.sendFile(path.resolve('dist/index.html'))
+        //res.sendFile(path.resolve('src/client/views/index.html'))
 })
 
 // designates what port the app will listen to for incoming requests
@@ -78,15 +78,18 @@ app.get('/forcast', async(req, res) => {
 
     //TODO: get the coordinates from geonames
 
-    const geonamesUser = process.env.API_GEONAMES_USERNAME;
-    const place = req.query.place;
+    const place = encodeURIComponent(req.query.place);
     const date = req.query.date;
+
     const headers = {
         headers: {
             Accept: "application/json"
         }
     };
 
+    //TODO: validate the keys are present in the .env file!!!
+
+    const geonamesUser = process.env.API_GEONAMES_USERNAME;
     var geoRes = await axios.get(`http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`,
         headers
     );
@@ -103,38 +106,22 @@ app.get('/forcast', async(req, res) => {
     const wthrUrl = `https://api.weatherbit.io/v2.0/current?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
 
     var wthrRes = await axios.get(wthrUrl, headers);
-
     console.dir(wthrRes.data);
 
+
+    //image url
+    const pixaBayKey = process.env.API_PIXELBAY_KEY;
+
+
+    const imgUrl = `https://pixabay.com/api/?key=${pixaBayKey}&q=${place}&image_type=photo&pretty=true`;
+    var imgUrlRes = await axios.get(imgUrl, headers);
+
+    console.dir(imgUrlRes.data);
+
     res.send({
-        location: locationGeo,
-        weather: wthrRes.data
+        location: geoRes.data,
+        weather: wthrRes.data,
+        pics: imgUrlRes.data
     });
-    // res.send(geoRes.data);
-
-
-    // .then(geoRes => {
-    //         console.log("Geonames returned :", JSON.stringify(geoRes.data));
-    //         res.send(geoRes.data);
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //         res.status(500).send(err);
-    //     })
-
-    /*
-     axios.get(`http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`, {
-        headers: {
-            Accept: "application/json"
-        }
-    })
-    .then(geoRes => {
-        console.log("Geonames returned :", JSON.stringify(geoRes.data));
-        res.send(geoRes.data);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).send(err);
-    }) */
 
 })

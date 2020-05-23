@@ -63,6 +63,12 @@ async function handleSubmit(event) {
 }
 
 
+async function addTrip(event) {
+    event.preventDefault();
+    alert("Not there yet!!!!");
+    return;
+}
 
 
-export { handleSubmit, getData }
+
+export { handleSubmit, getData, addTrip }

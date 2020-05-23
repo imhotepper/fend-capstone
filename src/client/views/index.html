@@ -3,22 +3,22 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Travel APP</title>
+    <title>Travellin..</title>
 
 </head>
 
 <body>
 
     <header>
-        <h1>Travelling!</h1>
+        <h1>Travellin</h1>
     </header>
 
     <main>
         <section>
-            <form class="" onsubmit="return Client.handleSubmit(event)">
+            <form class="" onsubmit="return Client.addTrip(event)">
                 <input id="name" type="text" name="input" value="" placeholder="The city you want to go" required>
                 <input id="date" type="date" name="date" value="" placeholder="The city you want to go" required>
-                <input type="submit" name="" value="Forcast" onclick="return Client.handleSubmit(event)" onsubmit="return handleSubmit(event)">
+                <input type="submit" name="" value="Forcast" onclick="return Client.addTrip(event)" onsubmit="return addTrip(event)">
             </form>
             <section>
 
@@ -33,13 +33,13 @@
     </footer>
 
     <script>
-        // Check that service workers are supported
-        if ('serviceWorker' in navigator) {
-            // Use the window load event to keep the page load performant
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js');
-            });
-        }
+        // // Check that service workers are supported
+        // if ('serviceWorker' in navigator) {
+        //     // Use the window load event to keep the page load performant
+        //     window.addEventListener('load', () => {
+        //         navigator.serviceWorker.register('/service-worker.js');
+        //     });
+        // }
     </script>
 
 </body>

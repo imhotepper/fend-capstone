@@ -41,7 +41,7 @@ module.exports = {
             cleanStaleWebpackAssets: true,
             protectWebpackAssets: false
         }),
-        new WorkoxPlugin.GenerateSW()
+        //new WorkoxPlugin.GenerateSW()
 
     ]
 }
