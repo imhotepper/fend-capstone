@@ -81,11 +81,15 @@ app.get('/forcast', async(req, res) => {
     const geonamesUser = process.env.API_GEONAMES_USERNAME;
     const place = req.query.place;
     const date = req.query.date;
-    var geoRes = await axios.get(`http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`, {
+    const headers = {
         headers: {
             Accept: "application/json"
         }
-    });
+    };
+
+    var geoRes = await axios.get(`http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`,
+        headers
+    );
 
     console.log("Geonames returned :", JSON.stringify(geoRes.data));
 
@@ -94,7 +98,19 @@ app.get('/forcast', async(req, res) => {
     var locationGeo = geoRes.data.postalCodes[0];
     console.log(`location: ${locationGeo.placeName} long: ${locationGeo.lng} and lat: ${locationGeo.lat}`)
 
-    res.send(geoRes.data);
+    //TODO: get weather in date
+    const weatherBitKey = process.env.API_WEATHERBIT_KEY;
+    const wthrUrl = `https://api.weatherbit.io/v2.0/current?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
+
+    var wthrRes = await axios.get(wthrUrl, headers);
+
+    console.dir(wthrRes.data);
+
+    res.send({
+        location: locationGeo,
+        weather: wthrRes.data
+    });
+    // res.send(geoRes.data);
 
 
     // .then(geoRes => {
