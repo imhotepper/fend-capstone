@@ -1,31 +1,16 @@
 
-# Analyse THIS!
+# Travellin ...
 
-This project will take an artilce url and it will display a 3 sentence summary of it using the [Aylien](https://developer.aylien.com) api.
+Capstone project for the Udacity Front End Nano degree
 
 # Project details
 
-The api was developed using the details presented in the module 5. Build Tools and Single Page Web Apps of the Front End Nano Degree program. 
-
-The front end also uses generated Service Worker so that it can be started without internet connectivity. Of course, there will be no summary displayed since no network is available, only the general layout of the page.
+WIP!
 
 # API details
 
-The api called by the front end is a simple one that is available at the following endpoint:
+WIP
 
-```js
-http://localhost:8080/analyse
-```
-
-The returned response has the following structure:
-
-```json
-{
-  "data":["Sentence 1", "Sentence 2", "Sentence3"]
-}
-```
-
-At the server side level the number of sentences returned can be configured because this is a parameter of the aylien api.
 
 ## Run locally 
 
