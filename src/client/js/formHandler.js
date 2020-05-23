@@ -62,13 +62,52 @@ async function handleSubmit(event) {
     }
 }
 
+const getTripData = async(place, date) => {
+    try {
+        const resp = await fetch(`http://localhost:8080/forcast?place=${place}&date=${date}`);
+        const respData = await resp.json();
+        return respData;
+
+    } catch (error) {
+        //TODO: propper error handler
+        alert('Erorr getting card DATA!\n', error)
+    }
+}
 
 async function addTrip(event) {
     event.preventDefault();
-    alert("Not there yet!!!!");
-    return;
+
+    const place = document.getElementById('place').value;
+    const date = document.getElementById('date').value;
+
+    const tripData = await getTripData(place, date);
+
+    console.dir(tripData);
+
+    var trips = JSON.parse(localStorage.getItem('trips'));
+    if (!trips) trips = new Array();
+
+    // add trip to trips
+    trips.push(tripData);
+
+    //save trips to localstorage
+    localStorage.setItem('trips', JSON.stringify(trips));
+
+    // call amethod to add items to the UI
+    await displayTrips();
+
+    //alert("Not there yet!!!!");
+    // return;
 }
 
+const displayTrips = async() => {
+    //get trips
+    //    const trips =
+    //if trips then clear ui elements
 
+    //iterate trips and add trip to ui
+
+    console.log("trips displayed!")
+}
 
 export { handleSubmit, getData, addTrip }

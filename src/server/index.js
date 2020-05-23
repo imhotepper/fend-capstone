@@ -94,19 +94,19 @@ app.get('/forcast', async(req, res) => {
         headers
     );
 
-    console.log("Geonames returned :", JSON.stringify(geoRes.data));
+    // console.log("Geonames returned :", JSON.stringify(geoRes.data));
 
     //get first record from array
     //TODO: check if present
     var locationGeo = geoRes.data.postalCodes[0];
-    console.log(`location: ${locationGeo.placeName} long: ${locationGeo.lng} and lat: ${locationGeo.lat}`)
+    // console.log(`location: ${locationGeo.placeName} long: ${locationGeo.lng} and lat: ${locationGeo.lat}`)
 
     //TODO: get weather in date
     const weatherBitKey = process.env.API_WEATHERBIT_KEY;
     const wthrUrl = `https://api.weatherbit.io/v2.0/current?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
 
     var wthrRes = await axios.get(wthrUrl, headers);
-    console.dir(wthrRes.data);
+    //console.dir(wthrRes.data);
 
 
     //image url
@@ -116,12 +116,35 @@ app.get('/forcast', async(req, res) => {
     const imgUrl = `https://pixabay.com/api/?key=${pixaBayKey}&q=${place}&image_type=photo&pretty=true`;
     var imgUrlRes = await axios.get(imgUrl, headers);
 
+    // console.dir(imgUrlRes.data);
+
+
+    //TODO save to some local DB
+
+    const weatherData = wthrRes.data.data[0];
+    let weather = {}
+    if (weatherData) {
+        weather.temperature = weatherData.temp;
+        weather.icon = weatherData.weather.icon;
+        weather.description = weatherData.weather.description;
+    }
+
+
     console.dir(imgUrlRes.data);
 
-    res.send({
-        location: geoRes.data,
-        weather: wthrRes.data,
-        pics: imgUrlRes.data
-    });
+    let imageUrl = imgUrlRes.data.hits[0];
+
+    var dataToSave = {
+        date: date,
+        location: locationGeo,
+        weather: weather,
+        image: imageUrl
+    }
+    res.send(dataToSave);
+    // res.send({
+    //     location: geoRes.data,
+    //     weather: wthrRes.data,
+    //     pics: imgUrlRes.data
+    // });
 
 })
