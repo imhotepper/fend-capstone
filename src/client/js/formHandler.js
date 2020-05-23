@@ -102,12 +102,32 @@ async function addTrip(event) {
 
 const displayTrips = async() => {
     //get trips
-    //    const trips =
+    var trips = JSON.parse(localStorage.getItem('trips'));
+    if (!trips) return;
+
     //if trips then clear ui elements
+    const tripsUI = document.getElementById('results');
+    tripsUI.innerHTML = "";
 
     //iterate trips and add trip to ui
+    trips.map((trip) => {
+        const txt =
+            `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
+        console.log(txt);
+
+        let mainDiv = document.createElement('div');
+        let p = document.createElement('p');
+        p.innerText = txt;
+        mainDiv.appendChild(p);
+        tripsUI.appendChild(mainDiv)
+    })
 
     console.log("trips displayed!")
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // your code goes here
+    displayTrips();
+    console.log('loading trips')
+}, false);
 export { handleSubmit, getData, addTrip }

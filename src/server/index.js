@@ -90,15 +90,17 @@ app.get('/forcast', async(req, res) => {
     //TODO: validate the keys are present in the .env file!!!
 
     const geonamesUser = process.env.API_GEONAMES_USERNAME;
-    var geoRes = await axios.get(`http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`,
+    let geoURL = `http://api.geonames.org/searchJSON?q=${place}&maxRows=1&username=${geonamesUser}`;
+    //old geoURL = `http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`;
+    var geoRes = await axios.get(geoURL,
         headers
     );
 
-    // console.log("Geonames returned :", JSON.stringify(geoRes.data));
+    console.dir(geoRes.data.geonames[0]);
 
     //get first record from array
     //TODO: check if present
-    var locationGeo = geoRes.data.postalCodes[0];
+    var locationGeo = geoRes.data.geonames[0];
     // console.log(`location: ${locationGeo.placeName} long: ${locationGeo.lng} and lat: ${locationGeo.lat}`)
 
     //TODO: get weather in date
@@ -125,18 +127,20 @@ app.get('/forcast', async(req, res) => {
     let weather = {}
     if (weatherData) {
         weather.temperature = weatherData.temp;
+        weather.app_temperature = weatherData.app_temp;
+        weather.ob_time = weatherData.ob_time;
         weather.icon = weatherData.weather.icon;
         weather.description = weatherData.weather.description;
     }
 
-
-    console.dir(imgUrlRes.data);
+    console.dir(weatherData)
+        //console.dir(imgUrlRes.data);
 
     let imageUrl = imgUrlRes.data.hits[0];
 
     var dataToSave = {
         date: date,
-        location: locationGeo,
+        location: locationGeo.name, // locationGeo,
         weather: weather,
         image: imageUrl
     }
