@@ -4,6 +4,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const WorkoxPlugin = require('workbox-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 
 module.exports = {
@@ -40,6 +41,14 @@ module.exports = {
             // Automatically remove all unused webpack assets on rebuild
             cleanStaleWebpackAssets: true,
             protectWebpackAssets: false
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: './src/client/icons', to: 'icons' }
+            ],
+            options: {
+                concurrency: 200,
+            },
         }),
         //new WorkoxPlugin.GenerateSW()
 

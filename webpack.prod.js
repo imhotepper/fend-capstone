@@ -6,6 +6,8 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const WorkoxPlugin = require('workbox-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+
 
 
 module.exports = {
@@ -37,6 +39,14 @@ module.exports = {
             filename: "./index.html",
         }),
         new MiniCssExtractPlugin({ filename: '[name].css' }),
-        new WorkoxPlugin.GenerateSW()
+        new WorkoxPlugin.GenerateSW(),
+        new CopyPlugin({
+            patterns: [
+                { from: './src/client/icons', to: 'icons' }
+            ],
+            options: {
+                concurrency: 100,
+            },
+        }),
     ]
 }

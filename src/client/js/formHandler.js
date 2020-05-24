@@ -112,10 +112,40 @@ const displayTrips = async() => {
     //iterate trips and add trip to ui
     trips.map((trip) => {
         const txt =
-            `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
+            `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
+        // `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
         console.log(txt);
 
         let mainDiv = document.createElement('div');
+        mainDiv.style.border = "1px solid grey";
+        mainDiv.style.marginBottom = "50px";
+        if (trip.image) {
+            // mainDiv.style.backgroundImage = `url("${trip.image.webformatURL}")`;
+            // mainDiv.style.backgroundSize = "cover";
+        }
+
+        //weather image
+        if (trip.weather.icon) {
+            let wDiv = document.createElement('div');
+            wDiv.style.display = "flex";
+            wDiv.style.alignItems = "center";
+            wDiv.style.justifyContent = "center";
+            // wDiv.style.justifyContent = "center";
+            // justify - items align - content
+
+            let img = document.createElement('img');
+            //console.dir(trip.image)
+            img.src = `icons/${trip.weather.icon}.png`;
+            img.style.height = "80px";
+
+            wDiv.appendChild(img);
+            let span = document.createElement('div')
+            span.innerHTML = `${trip.weather.temperature}&deg; with ${trip.weather.description}`;
+            wDiv.appendChild(span)
+            mainDiv.appendChild(wDiv)
+
+        }
+
         let picDiv = document.createElement('div');
         if (trip.image && trip.image.webformatURL) {
             let img = document.createElement('img');
@@ -127,6 +157,10 @@ const displayTrips = async() => {
         let p = document.createElement('p');
         p.innerText = txt;
         mainDiv.appendChild(p);
+
+
+
+
         tripsUI.appendChild(mainDiv)
     })
 
