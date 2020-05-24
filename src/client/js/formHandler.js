@@ -84,14 +84,7 @@ async function addTrip(event) {
 
     console.dir(tripData);
 
-    var trips = JSON.parse(localStorage.getItem('trips'));
-    if (!trips) trips = new Array();
-
-    // add trip to trips
-    trips.push(tripData);
-
-    //save trips to localstorage
-    localStorage.setItem('trips', JSON.stringify(trips));
+    await saveTripsToCache(tripData);
 
     // call amethod to add items to the UI
     await displayTrips();
@@ -100,9 +93,12 @@ async function addTrip(event) {
     // return;
 }
 
+
 const displayTrips = async() => {
     //get trips
-    var trips = JSON.parse(localStorage.getItem('trips'));
+    var trips = await getTripsFromCache();
+
+    // JSON.parse(localStorage.getItem('trips'));
     if (!trips) return;
 
     //if trips then clear ui elements
@@ -110,7 +106,7 @@ const displayTrips = async() => {
     tripsUI.innerHTML = "";
 
     //iterate trips and add trip to ui
-    trips.map((trip) => {
+    trips.map((trip, index) => {
         const txt =
             `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
         // `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
@@ -119,6 +115,27 @@ const displayTrips = async() => {
         let mainDiv = document.createElement('div');
         mainDiv.style.border = "1px solid grey";
         mainDiv.style.marginBottom = "50px";
+        mainDiv.style.display = "flex";
+        mainDiv.style.flexDirection = "column";
+
+        //delete icon
+        const del = document.createElement('a');
+        del.innerText = "X";
+        del.href = "#";
+        del.style.alignSelf = "flex-end";
+        del.style.margin = "10px";
+        del.style.textDecoration = "none";
+
+        del.addEventListener('click', async(ev) => {
+            if (confirm('delete this trip? ' + index)) {
+                await delTripFromCache(index);
+                await displayTrips();
+            }
+        })
+
+        mainDiv.appendChild(del)
+
+
         if (trip.image) {
             // mainDiv.style.backgroundImage = `url("${trip.image.webformatURL}")`;
             // mainDiv.style.backgroundSize = "cover";
@@ -151,6 +168,8 @@ const displayTrips = async() => {
             let img = document.createElement('img');
             //console.dir(trip.image)
             img.src = trip.image.webformatURL;
+            img.style.paddingLeft = "20px";
+            img.style.paddingRight = "20px";
             mainDiv.appendChild(img);
         }
 
@@ -173,3 +192,35 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('loading trips')
 }, false);
 export { handleSubmit, getData, addTrip }
+
+const saveTripsToCache = async(tripData) => {
+    var trips = JSON.parse(localStorage.getItem('trips'));
+    if (!trips)
+        trips = new Array();
+    // add trip to trips
+    trips.push(tripData);
+    //save trips to localstorage
+    localStorage.setItem('trips', JSON.stringify(trips));
+}
+
+
+const getTripsFromCache = async() => {
+    var trips = JSON.parse(localStorage.getItem('trips'));
+    if (!trips) return null;
+
+    return trips;
+
+}
+
+
+const delTripFromCache = async(index) => {
+    const trips = await getTripsFromCache();
+    if (!trips) return null;
+
+    console.log("items : " + trips.length)
+    trips.splice(index, 1);
+    console.log("items after : " + trips.length);
+    localStorage.setItem('trips', JSON.stringify(trips));
+
+
+}
