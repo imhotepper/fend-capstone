@@ -86,11 +86,11 @@ async function addTrip(event) {
 
     await saveTripsToCache(tripData);
 
+    displayOneTrip(tripData, getTripData.length);
     // call amethod to add items to the UI
-    await displayTrips();
+    //await displayTrips();
 
-    //alert("Not there yet!!!!");
-    // return;
+
 }
 
 
@@ -107,80 +107,7 @@ const displayTrips = async() => {
 
     //iterate trips and add trip to ui
     trips.map((trip, index) => {
-        const txt =
-            `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
-        // `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
-        console.log(txt);
-
-        let mainDiv = document.createElement('div');
-        mainDiv.style.border = "1px solid grey";
-        mainDiv.style.marginBottom = "50px";
-        mainDiv.style.display = "flex";
-        mainDiv.style.flexDirection = "column";
-
-        //delete icon
-        const del = document.createElement('a');
-        del.innerText = "X";
-        del.href = "#";
-        del.style.alignSelf = "flex-end";
-        del.style.margin = "10px";
-        del.style.textDecoration = "none";
-
-        del.addEventListener('click', async(ev) => {
-            if (confirm('delete this trip? ' + index)) {
-                await delTripFromCache(index);
-                await displayTrips();
-            }
-        })
-
-        mainDiv.appendChild(del)
-
-
-        if (trip.image) {
-            // mainDiv.style.backgroundImage = `url("${trip.image.webformatURL}")`;
-            // mainDiv.style.backgroundSize = "cover";
-        }
-
-        //weather image
-        if (trip.weather.icon) {
-            let wDiv = document.createElement('div');
-            wDiv.style.display = "flex";
-            wDiv.style.alignItems = "center";
-            wDiv.style.justifyContent = "center";
-            // wDiv.style.justifyContent = "center";
-            // justify - items align - content
-
-            let img = document.createElement('img');
-            //console.dir(trip.image)
-            img.src = `icons/${trip.weather.icon}.png`;
-            img.style.height = "80px";
-
-            wDiv.appendChild(img);
-            let span = document.createElement('div')
-            span.innerHTML = `${trip.weather.temperature}&deg; with ${trip.weather.description}`;
-            wDiv.appendChild(span)
-            mainDiv.appendChild(wDiv)
-
-        }
-
-        let picDiv = document.createElement('div');
-        if (trip.image && trip.image.webformatURL) {
-            let img = document.createElement('img');
-            //console.dir(trip.image)
-            img.src = trip.image.webformatURL;
-            img.style.paddingLeft = "20px";
-            img.style.paddingRight = "20px";
-            mainDiv.appendChild(img);
-        }
-
-        let p = document.createElement('p');
-        p.innerText = txt;
-        mainDiv.appendChild(p);
-
-
-
-
-        tripsUI.appendChild(mainDiv)
+        displayOneTrip(trip, index, tripsUI);
     })
 
     console.log("trips displayed!")
@@ -191,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     displayTrips();
     console.log('loading trips')
 }, false);
-export { handleSubmit, getData, addTrip }
+
 
 const saveTripsToCache = async(tripData) => {
     var trips = JSON.parse(localStorage.getItem('trips'));
@@ -202,6 +129,8 @@ const saveTripsToCache = async(tripData) => {
     //save trips to localstorage
     localStorage.setItem('trips', JSON.stringify(trips));
 }
+
+
 
 
 const getTripsFromCache = async() => {
@@ -224,3 +153,84 @@ const delTripFromCache = async(index) => {
 
 
 }
+
+function displayOneTrip(trip, index, tripsUI) {
+    let scrollLast = false;
+    if (!tripsUI) {
+        tripsUI = document.getElementById('results');
+        scrollLast = true;
+    }
+
+    const txt = `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
+    // `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
+    console.log(txt);
+    let mainDiv = document.createElement('div');
+    mainDiv.style.border = "1px solid grey";
+    mainDiv.style.marginBottom = "50px";
+    mainDiv.style.display = "flex";
+    mainDiv.style.flexDirection = "column";
+    //delete icon
+    const del = document.createElement('a');
+    del.innerText = "X";
+    del.href = "#";
+    del.style.alignSelf = "flex-end";
+    del.style.margin = "10px";
+    del.style.textDecoration = "none";
+    del.addEventListener('click', async(ev) => {
+        if (confirm('delete this trip? ')) {
+            await delTripFromCache(index);
+            await displayTrips();
+        }
+    });
+    mainDiv.appendChild(del);
+    if (trip.image) {
+        // mainDiv.style.backgroundImage = `url("${trip.image.webformatURL}")`;
+        // mainDiv.style.backgroundSize = "cover";
+    }
+    //weather image
+    if (trip.weather.icon) {
+        let wDiv = document.createElement('div');
+        wDiv.style.display = "flex";
+        wDiv.style.alignItems = "center";
+        wDiv.style.justifyContent = "center";
+        // wDiv.style.justifyContent = "center";
+        // justify - items align - content
+        let img = document.createElement('img');
+        //console.dir(trip.image)
+        img.src = `icons/${trip.weather.icon}.png`;
+        img.style.height = "80px";
+        wDiv.appendChild(img);
+        let span = document.createElement('div');
+        span.innerHTML = `${trip.weather.temperature}&deg; with ${trip.weather.description}`;
+        wDiv.appendChild(span);
+        mainDiv.appendChild(wDiv);
+    }
+    let picDiv = document.createElement('div');
+    if (trip.image && trip.image.webformatURL) {
+        let img = document.createElement('img');
+        //console.dir(trip.image)
+        img.src = trip.image.webformatURL;
+        img.style.paddingLeft = "20px";
+        img.style.paddingRight = "20px";
+        mainDiv.appendChild(img);
+
+        console.log('scroll to last : ', scrollLast)
+        if (scrollLast == true)
+            img.addEventListener('load', () => {
+                img.scrollIntoView({ behavior: 'smooth' });
+            })
+
+    }
+    let p = document.createElement('p');
+    p.innerText = txt;
+    mainDiv.appendChild(p);
+    tripsUI.appendChild(mainDiv);
+
+    // mainDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+
+
+
+
+export { handleSubmit, getData, addTrip }
