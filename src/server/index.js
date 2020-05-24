@@ -140,7 +140,7 @@ app.get('/forcast', async(req, res) => {
 
     var dataToSave = {
         date: date,
-        location: locationGeo.name, // locationGeo,
+        location: locationGeo, // locationGeo,
         weather: weather,
         image: imageUrl
     }

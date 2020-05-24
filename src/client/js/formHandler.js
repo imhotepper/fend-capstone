@@ -116,6 +116,14 @@ const displayTrips = async() => {
         console.log(txt);
 
         let mainDiv = document.createElement('div');
+        let picDiv = document.createElement('div');
+        if (trip.image && trip.image.webformatURL) {
+            let img = document.createElement('img');
+            //console.dir(trip.image)
+            img.src = trip.image.webformatURL;
+            mainDiv.appendChild(img);
+        }
+
         let p = document.createElement('p');
         p.innerText = txt;
         mainDiv.appendChild(p);
