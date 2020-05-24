@@ -96,20 +96,42 @@ app.get('/forcast', async(req, res) => {
         headers
     );
 
-    console.dir(geoRes.data.geonames[0]);
+    // console.dir(geoRes.data.geonames[0]);
 
     //get first record from array
     //TODO: check if present
     var locationGeo = geoRes.data.geonames[0];
     // console.log(`location: ${locationGeo.placeName} long: ${locationGeo.lng} and lat: ${locationGeo.lat}`)
 
-    //TODO: get weather in date
-    const weatherBitKey = process.env.API_WEATHERBIT_KEY;
-    const wthrUrl = `https://api.weatherbit.io/v2.0/current?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
+    let weather = {}
 
-    var wthrRes = await axios.get(wthrUrl, headers);
-    //console.dir(wthrRes.data);
+    if (getWeatherData(date) == true) {
 
+        //TODO: get weather in date
+        const weatherBitKey = process.env.API_WEATHERBIT_KEY;
+        const wthrUrl =
+            //`https://api.weatherbit.io/v2.0/current?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
+            `https://api.weatherbit.io/v2.0/forecast/daily?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
+
+        //console.log(wthrUrl)
+
+        var wthrRes = await axios.get(wthrUrl, headers);
+        // console.dir(wthrRes.data);
+
+        const weatherData = wthrRes.data.data[0];
+
+        const onDate = wthrRes.data.data.find(x => x.datetime == date)
+        console.log('--------------------')
+        console.dir(onDate)
+
+        if (onDate) {
+            weather.temperature = onDate.temp;
+            weather.min_temp = onDate.min_temp;
+            weather.max_temp = onDate.max_temp;
+            weather.icon = onDate.weather.icon;
+            weather.description = onDate.weather.description;
+        }
+    }
 
     //image url
     const pixaBayKey = process.env.API_PIXELBAY_KEY;
@@ -123,18 +145,17 @@ app.get('/forcast', async(req, res) => {
 
     //TODO save to some local DB
 
-    const weatherData = wthrRes.data.data[0];
-    let weather = {}
-    if (weatherData) {
-        weather.temperature = weatherData.temp;
-        weather.app_temperature = weatherData.app_temp;
-        weather.ob_time = weatherData.ob_time;
-        weather.icon = weatherData.weather.icon;
-        weather.description = weatherData.weather.description;
-    }
 
-    console.dir(weatherData)
-        //console.dir(imgUrlRes.data);
+    // if (weatherData) {
+    //     weather.temperature = weatherData.temp;
+    //     weather.app_temperature = weatherData.app_temp;
+    //     weather.ob_time = weatherData.ob_time;
+    //     weather.icon = weatherData.weather.icon;
+    //     weather.description = weatherData.weather.description;
+    // }
+
+    //console.dir(weatherData)
+
 
     let imageUrl = imgUrlRes.data.hits[0];
 
@@ -152,3 +173,12 @@ app.get('/forcast', async(req, res) => {
     // });
 
 })
+
+function getWeatherData(date) {
+    let dt = new Date(date)
+    console.log(dt)
+    const diffTime = Math.abs(dt - new Date())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    console.log(diffDays + " days")
+    return diffDays < 16;
+}

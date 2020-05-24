@@ -183,10 +183,12 @@ function displayOneTrip(trip, index, tripsUI) {
         }
     });
     mainDiv.appendChild(del);
-    if (trip.image) {
-        // mainDiv.style.backgroundImage = `url("${trip.image.webformatURL}")`;
-        // mainDiv.style.backgroundSize = "cover";
-    }
+    // if (trip.image) {
+    //     // mainDiv.style.backgroundImage = `url("${trip.image.webformatURL}")`;
+    //     // mainDiv.style.backgroundSize = "cover";
+    // }
+
+
     //weather image
     if (trip.weather.icon) {
         let wDiv = document.createElement('div');
@@ -204,6 +206,13 @@ function displayOneTrip(trip, index, tripsUI) {
         span.innerHTML = `${trip.weather.temperature}&deg; with ${trip.weather.description}`;
         wDiv.appendChild(span);
         mainDiv.appendChild(wDiv);
+    } else {
+        let span = document.createElement('div');
+        span.innerHTML = `No weather available!`;
+        span.style.fontSize = "1.3em";
+        span.style.color = "orange";
+        span.style.padding = "10px";
+        mainDiv.appendChild(span);
     }
     let picDiv = document.createElement('div');
     if (trip.image && trip.image.webformatURL) {
