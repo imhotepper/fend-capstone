@@ -3,12 +3,16 @@ form {
     border-radius: 3px;
     padding: 40px;
     text-align: center;
-    font-size: 1.5em;
 }
 
 input {
     padding: 5px 20px;
-    width: 90%;
+    // width: 90%;
     line-height: 26px;
     margin: 10px 0;
+    font-size: 1.2em;
+}
+
+input[type=submit] {
+    font-size: 1.2em;
 }

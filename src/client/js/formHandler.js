@@ -80,6 +80,11 @@ async function addTrip(event) {
     const place = document.getElementById('place').value;
     const date = document.getElementById('date').value;
 
+    if (Client.dateChecker(date) != true) {
+        alert('Invalid date for the trip!\nThe date should be in the following format: yyyy-MM-dd');
+        return false;
+    }
+
     const tripData = await getTripData(place, date);
 
     console.dir(tripData);
@@ -215,6 +220,7 @@ function displayOneTrip(trip, index, tripsUI) {
         mainDiv.appendChild(span);
     }
     let picDiv = document.createElement('div');
+    let img = null;
     if (trip.image && trip.image.webformatURL) {
         let img = document.createElement('img');
         //console.dir(trip.image)
@@ -224,16 +230,21 @@ function displayOneTrip(trip, index, tripsUI) {
         mainDiv.appendChild(img);
 
         console.log('scroll to last : ', scrollLast)
-        if (scrollLast == true)
+        if (scrollLast == true) {
             img.addEventListener('load', () => {
                 img.scrollIntoView({ behavior: 'smooth' });
             })
+        }
 
     }
+
     let p = document.createElement('p');
     p.innerText = txt;
     mainDiv.appendChild(p);
     tripsUI.appendChild(mainDiv);
+    if (!img && scrollLast == true)
+        tripsUI.lastChild.scrollIntoView({ behavior: 'smooth' });
+
 
     // mainDiv.scrollIntoView({ behavior: 'smooth' });
 }

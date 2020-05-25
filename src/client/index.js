@@ -5,10 +5,10 @@ import './styles/footer.scss'
 import './styles/form.scss'
 
 import { handleSubmit, addTrip } from './js/formHandler'
-import { urlChecker } from './js/urlChecker'
+import { dateChecker } from './js/dateChecker'
 
 export {
     handleSubmit,
-    urlChecker,
+    dateChecker,
     addTrip
 }
