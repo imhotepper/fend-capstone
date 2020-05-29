@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-console.log(__dirname)
+//console.log(__dirname)
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -24,9 +24,6 @@ dotenv.config();
 
 //axios
 const axios = require('axios');
-
-
-
 
 
 var AYLIENTextAPI = require('aylien_textapi');
@@ -110,7 +107,6 @@ app.get('/forcast', async(req, res) => {
         //TODO: get weather in date
         const weatherBitKey = process.env.API_WEATHERBIT_KEY;
         const wthrUrl =
-            //`https://api.weatherbit.io/v2.0/current?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
             `https://api.weatherbit.io/v2.0/forecast/daily?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
 
         //console.log(wthrUrl)
@@ -121,8 +117,6 @@ app.get('/forcast', async(req, res) => {
         const weatherData = wthrRes.data.data[0];
 
         const onDate = wthrRes.data.data.find(x => x.datetime == date)
-        console.log('--------------------')
-        console.dir(onDate)
 
         if (onDate) {
             weather.temperature = onDate.temp;
@@ -143,42 +137,25 @@ app.get('/forcast', async(req, res) => {
     // console.dir(imgUrlRes.data);
 
 
-    //TODO save to some local DB
-
-
-    // if (weatherData) {
-    //     weather.temperature = weatherData.temp;
-    //     weather.app_temperature = weatherData.app_temp;
-    //     weather.ob_time = weatherData.ob_time;
-    //     weather.icon = weatherData.weather.icon;
-    //     weather.description = weatherData.weather.description;
-    // }
-
-    //console.dir(weatherData)
-
-
     let imageUrl = imgUrlRes.data.hits[0];
 
     var dataToSave = {
         date: date,
-        location: locationGeo, // locationGeo,
+        location: locationGeo,
         weather: weather,
         image: imageUrl
     }
     res.send(dataToSave);
-    // res.send({
-    //     location: geoRes.data,
-    //     weather: wthrRes.data,
-    //     pics: imgUrlRes.data
-    // });
+
 
 })
 
 function getWeatherData(date) {
     let dt = new Date(date)
-    console.log(dt)
     const diffTime = Math.abs(dt - new Date())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    console.log(diffDays + " days")
     return diffDays < 16;
 }
+
+
+module.exports = app;
