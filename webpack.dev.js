@@ -50,7 +50,7 @@ module.exports = {
                 concurrency: 200,
             },
         }),
-        //new WorkoxPlugin.GenerateSW()
+        new WorkoxPlugin.GenerateSW()
 
     ]
 }

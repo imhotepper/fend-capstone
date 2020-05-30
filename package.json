@@ -4,10 +4,10 @@
     "main": "index.js",
     "scripts": {
         "test": "jest",
-        "start": "node src/server/index.js",
+        "start": "node src/server/server.js",
         "build-prod": "webpack --config webpack.prod.js",
         "build-dev": "webpack-dev-server  --config webpack.dev.js --open",
-        "dev": "concurrently --kill-others \"npm run build-dev\" \"nodemon run src/server/index.js\""
+        "dev": "concurrently --kill-others \"npm run build-dev\" \"nodemon run src/server/server.js\""
     },
     "keywords": [],
     "author": "",

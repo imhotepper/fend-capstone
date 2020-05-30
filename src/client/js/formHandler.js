@@ -1,66 +1,66 @@
-async function getData(formUrl) {
+// async function getData(formUrl) {
 
-    return await fetch('http://localhost:8080/analyse', {
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify({
-            url: formUrl
-        })
-    }).then(function(resp) {
-        return resp.json();
-    }).catch(function(err) {
-        return;
-    })
-}
-
-
-
-async function handleSubmit(event) {
-    event.preventDefault()
-
-    // check what text was put into the form field
-    let formText = document.getElementById('name').value
-
-    if (Client.urlChecker(formText) != true) {
-        alert('Invalid address to summarize!\nThe address should start with http:// or https://');
-        return false;
-    }
-
-    const content = document.getElementById('results');
-    const title = document.getElementById('title');
-    title.innerHTML = "Analysing, please wait ...";
-    content.innerHTML = "";
-
-    //if offline show some message
-    if (!navigator.onLine) {
-        title.innerHTML = "Offline! please try again when network connectivity is available.";
-        title.style.color = "red";
-        return;
-    } else {
-        title.style.color = null;
-    }
+//     return await fetch('http://localhost:8080/analyse', {
+//         credentials: 'same-origin',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         method: "POST",
+//         body: JSON.stringify({
+//             url: formUrl
+//         })
+//     }).then(function(resp) {
+//         return resp.json();
+//     }).catch(function(err) {
+//         return;
+//     })
+// }
 
 
-    const res = await getData(formText);
 
-    if (!res) {
-        title.innerHTML = "Ups, something went wrong!";
-    } else {
-        const ps = [];
-        res.data.forEach(element => {
-            const p = document.createElement('p');
-            p.innerHTML = element;
-            ps.push(p);
-        });
-        title.innerHTML = "Here is your summary:"
-        ps.map(p => {
-            content.appendChild(p);
-        })
-    }
-}
+// async function handleSubmit(event) {
+//     event.preventDefault()
+
+//     // check what text was put into the form field
+//     let formText = document.getElementById('name').value
+
+//     if (Client.urlChecker(formText) != true) {
+//         alert('Invalid address to summarize!\nThe address should start with http:// or https://');
+//         return false;
+//     }
+
+//     const content = document.getElementById('results');
+//     const title = document.getElementById('title');
+//     title.innerHTML = "Analysing, please wait ...";
+//     content.innerHTML = "";
+
+//     //if offline show some message
+//     if (!navigator.onLine) {
+//         title.innerHTML = "Offline! please try again when network connectivity is available.";
+//         title.style.color = "red";
+//         return;
+//     } else {
+//         title.style.color = null;
+//     }
+
+
+//     const res = await getData(formText);
+
+//     if (!res) {
+//         title.innerHTML = "Ups, something went wrong!";
+//     } else {
+//         const ps = [];
+//         res.data.forEach(element => {
+//             const p = document.createElement('p');
+//             p.innerHTML = element;
+//             ps.push(p);
+//         });
+//         title.innerHTML = "Here is your summary:"
+//         ps.map(p => {
+//             content.appendChild(p);
+//         })
+//     }
+// }
 
 const getTripData = async(place, date) => {
     try {
@@ -87,15 +87,13 @@ async function addTrip(event) {
 
     const tripData = await getTripData(place, date);
 
-    console.dir(tripData);
+    //console.dir(tripData);
 
     await saveTripsToCache(tripData);
 
     displayOneTrip(tripData, getTripData.length);
     // call amethod to add items to the UI
     //await displayTrips();
-
-
 }
 
 
@@ -103,7 +101,6 @@ const displayTrips = async() => {
     //get trips
     var trips = await getTripsFromCache();
 
-    // JSON.parse(localStorage.getItem('trips'));
     if (!trips) return;
 
     //if trips then clear ui elements
@@ -115,13 +112,13 @@ const displayTrips = async() => {
         displayOneTrip(trip, index, tripsUI);
     })
 
-    console.log("trips displayed!")
+    //console.log("trips displayed!")
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     // your code goes here
     displayTrips();
-    console.log('loading trips')
+    // console.log('loading trips')
 }, false);
 
 
@@ -136,30 +133,25 @@ const saveTripsToCache = async(tripData) => {
 }
 
 
-
-
 const getTripsFromCache = async() => {
     var trips = JSON.parse(localStorage.getItem('trips'));
     if (!trips) return null;
-
     return trips;
-
 }
 
 
 const delTripFromCache = async(index) => {
-    const trips = await getTripsFromCache();
+    let trips = await getTripsFromCache();
     if (!trips) return null;
 
-    console.log("items : " + trips.length)
     trips.splice(index, 1);
-    console.log("items after : " + trips.length);
     localStorage.setItem('trips', JSON.stringify(trips));
-
-
+    await displayNoTrips();
 }
 
-function displayOneTrip(trip, index, tripsUI) {
+async function displayOneTrip(trip, index, tripsUI) {
+    //show no trips on screen
+    await displayNoTrips()
     let scrollLast = false;
     if (!tripsUI) {
         tripsUI = document.getElementById('results');
@@ -167,8 +159,6 @@ function displayOneTrip(trip, index, tripsUI) {
     }
 
     const txt = `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
-    // `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} will have weather: ${trip.weather.temperature} degrees and ${trip.weather.description}`;
-    console.log(txt);
     let mainDiv = document.createElement('div');
     mainDiv.style.border = "1px solid grey";
     mainDiv.style.marginBottom = "50px";
@@ -182,8 +172,9 @@ function displayOneTrip(trip, index, tripsUI) {
     del.style.margin = "10px";
     del.style.textDecoration = "none";
     del.addEventListener('click', async(ev) => {
+        const idx = index;
         if (confirm('delete this trip? ')) {
-            await delTripFromCache(index);
+            await delTripFromCache(idx);
             await displayTrips();
         }
     });
@@ -200,10 +191,7 @@ function displayOneTrip(trip, index, tripsUI) {
         wDiv.style.display = "flex";
         wDiv.style.alignItems = "center";
         wDiv.style.justifyContent = "center";
-        // wDiv.style.justifyContent = "center";
-        // justify - items align - content
         let img = document.createElement('img');
-        //console.dir(trip.image)
         img.src = `icons/${trip.weather.icon}.png`;
         img.style.height = "80px";
         wDiv.appendChild(img);
@@ -229,13 +217,11 @@ function displayOneTrip(trip, index, tripsUI) {
         img.style.paddingRight = "20px";
         mainDiv.appendChild(img);
 
-        console.log('scroll to last : ', scrollLast)
         if (scrollLast == true) {
             img.addEventListener('load', () => {
                 img.scrollIntoView({ behavior: 'smooth' });
             })
         }
-
     }
 
     let p = document.createElement('p');
@@ -245,12 +231,16 @@ function displayOneTrip(trip, index, tripsUI) {
     if (!img && scrollLast == true)
         tripsUI.lastChild.scrollIntoView({ behavior: 'smooth' });
 
-
     // mainDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+const displayNoTrips = async() => {
+    const tripsFromCache = await getTripsFromCache();
+    const noTripsSection = document.getElementById('noTrips')
+    console.log('no trips', noTripsSection);
+    noTripsSection.style.display = !tripsFromCache || tripsFromCache.length == 0 ? "block" : "none";
 }
 
 
 
-
-
-export { handleSubmit, getData, addTrip }
+export { addTrip }

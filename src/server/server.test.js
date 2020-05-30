@@ -7,15 +7,9 @@ describe('Sample Test', () => {
 })
 
 const supertest = require('supertest')
-const app = require('./index')
+const app = require('./server')
 describe('Express Endpoints', () => {
-    it('should return some mockdata', async() => {
-        await supertest(app)
-            .get('/test')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200);
-    })
+
 
     it('should return data for bucharest', async() => {
         let dt = new Date().toISOString().split('T')[0];

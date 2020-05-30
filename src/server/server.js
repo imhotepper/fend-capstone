@@ -1,6 +1,6 @@
 var path = require('path')
 const express = require('express')
-const mockAPIResponse = require('./mockAPI.js')
+
 
 const app = express()
 
@@ -26,13 +26,6 @@ dotenv.config();
 const axios = require('axios');
 
 
-var AYLIENTextAPI = require('aylien_textapi');
-var textapi = new AYLIENTextAPI({
-    application_id: process.env.API_ID,
-    application_key: process.env.API_KEY
-});
-
-
 app.get('/', function(req, res) {
     res.sendFile(path.resolve('dist/index.html'))
         //res.sendFile(path.resolve('src/client/views/index.html'))
@@ -40,35 +33,8 @@ app.get('/', function(req, res) {
 
 // designates what port the app will listen to for incoming requests
 app.listen(8080, function() {
-    console.log('Example app listening on port 8080!')
+    console.log('Server listening on port 8080!')
 })
-
-app.post('/analyse', async(req, res) => {
-    //validate url is url
-    const testUrl = req.body.url;
-    console.log(`analysing this: ${testUrl}`);
-    textapi.summarize({
-        url: testUrl,
-        sentences_number: 3
-    }, function(error, resp) {
-        if (error) {
-            console.log('error aylien: ' + error);
-            return res.status(500).json({
-                err: error
-            });
-        }
-
-        res.status(200).json({
-            data: resp.sentences
-        });
-    });
-
-})
-
-app.get('/test', function(req, res) {
-    res.send(mockAPIResponse)
-})
-
 
 app.get('/forcast', async(req, res) => {
     console.log(`looking for: ${req.query.place} with date: ${req.query.date}`);
