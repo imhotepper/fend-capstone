@@ -1,16 +1,6 @@
-test('can test server', async() => {});
-
-describe('Sample Test', () => {
-    it('should test that true === true', () => {
-        expect(true).toBe(true)
-    })
-})
-
 const supertest = require('supertest')
 const app = require('./server')
-describe('Express Endpoints', () => {
-
-
+describe('Express Endpoint', () => {
     it('should return data for bucharest', async() => {
         let dt = new Date().toISOString().split('T')[0];
         await supertest(app)
@@ -23,7 +13,5 @@ describe('Express Endpoints', () => {
             // .expect('Content-Type', /json/)
             .expect(200)
             //.then(response => console.log(response))
-
-
     })
 })
