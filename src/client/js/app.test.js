@@ -1,4 +1,4 @@
- const { dateChecker } = require('./dateChecker');
+ const { dateChecker } = require('./app');
 
  test('checks invalid date', () => {
      expect(dateChecker('25 may 2021')).toBe(false);

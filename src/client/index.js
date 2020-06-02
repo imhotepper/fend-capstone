@@ -4,8 +4,7 @@ import './styles/base.scss'
 // import './styles/footer.scss'
 // import './styles/form.scss'
 
-import { addTrip } from './js/formHandler'
-import { dateChecker } from './js/dateChecker'
+import { addTrip, dateChecker } from './js/app'
 
 export {
     dateChecker,

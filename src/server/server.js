@@ -54,17 +54,13 @@ app.get('/forcast', async(req, res) => {
 
     const geonamesUser = process.env.API_GEONAMES_USERNAME;
     let geoURL = `http://api.geonames.org/searchJSON?q=${place}&maxRows=1&username=${geonamesUser}`;
-    //old geoURL = `http://api.geonames.org/postalCodeSearch?placename=${place}&maxRows=10&username=${geonamesUser}`;
     var geoRes = await axios.get(geoURL,
         headers
     );
 
-    // console.dir(geoRes.data.geonames[0]);
-
     //get first record from array
     //TODO: check if present
     var locationGeo = geoRes.data.geonames[0];
-    // console.log(`location: ${locationGeo.placeName} long: ${locationGeo.lng} and lat: ${locationGeo.lat}`)
 
     let weather = {}
 
@@ -75,10 +71,7 @@ app.get('/forcast', async(req, res) => {
         const wthrUrl =
             `https://api.weatherbit.io/v2.0/forecast/daily?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
 
-        //console.log(wthrUrl)
-
         var wthrRes = await axios.get(wthrUrl, headers);
-        // console.dir(wthrRes.data);
 
         const weatherData = wthrRes.data.data[0];
 
@@ -96,12 +89,8 @@ app.get('/forcast', async(req, res) => {
     //image url
     const pixaBayKey = process.env.API_PIXELBAY_KEY;
 
-
     const imgUrl = `https://pixabay.com/api/?key=${pixaBayKey}&q=${place}&image_type=photo&pretty=true`;
     var imgUrlRes = await axios.get(imgUrl, headers);
-
-    // console.dir(imgUrlRes.data);
-
 
     let imageUrl = imgUrlRes.data.hits[0];
 
@@ -112,8 +101,6 @@ app.get('/forcast', async(req, res) => {
         image: imageUrl
     }
     res.send(dataToSave);
-
-
 })
 
 function getWeatherData(date) {
