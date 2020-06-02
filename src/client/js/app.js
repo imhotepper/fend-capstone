@@ -20,17 +20,19 @@ const getTripData = async(place, date) => {
 async function addTrip(event) {
     event.preventDefault();
 
-    const place = document.getElementById('place').value;
-    const date = document.getElementById('date').value;
+    const place = document.getElementById('place');
+    const date = document.getElementById('date');
 
-    if (Client.dateChecker(date) != true) {
+    if (Client.dateChecker(date.value) != true) {
         alert('Invalid date for the trip!\nThe date should be in the following format: yyyy-MM-dd');
         return false;
     }
 
-    const tripData = await getTripData(place, date);
+    const tripData = await getTripData(place.value, date.value);
     await saveTripsToCache(tripData);
     displayOneTrip(tripData, getTripData.length);
+    place.value = "";
+    date.value = "";
 }
 
 
@@ -92,23 +94,13 @@ async function displayOneTrip(trip, index, tripsUI) {
 
     const txt = `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
     let mainDiv = document.createElement('div');
-    // mainDiv.style.border = "1px solid grey";
-    // mainDiv.style.marginBottom = "50px";
-    // mainDiv.style.display = "flex";
-    // mainDiv.style.flexDirection = "column";
     mainDiv.className = "card";
     //delete icon
     const del = document.createElement('a');
     del.innerText = "X";
     del.href = "#";
-    // del.style.alignSelf = "flex-end";
-    // del.style.margin = "10px";
-    // del.style.textDecoration = "none";
     del.className = "close"
     del.addEventListener('click', async(ev) => {
-        console.log('deleting index:', trip.id)
-
-        //  const idx = index;
         if (confirm(`delete trip to: ${trip.location.name}? `)) {
             console.log('deleting index:', index);
             await delTripFromCache(index);
@@ -159,6 +151,7 @@ async function displayOneTrip(trip, index, tripsUI) {
     tripsUI.appendChild(mainDiv);
     if (!img && scrollLast == true)
         tripsUI.lastChild.scrollIntoView({ behavior: 'smooth' });
+
 
 }
 

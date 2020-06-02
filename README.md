@@ -34,8 +34,9 @@ API_PIXELBAY_KEY=
 ```
 - use `npm install` or `yarn` in order to install dependencies
 - start the webpack-dev server and the express server concurrently using `npm run dev` or `yarn dev`
+- start only de Express server use `npm run server` or `yarn server`
 - to execute the tests use `npm run test` or `yarn test` 
-
+- to build dist folder use `npm run build-prod` or `yarn build-prod`
 ## Deploying
  Work In Progress
 

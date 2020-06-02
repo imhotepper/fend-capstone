@@ -1,14 +1,6 @@
-// body {
-//     display: flex;
-//     flex-direction: column;
-//     min-height: 100vh;
-// }
 body {
     display: grid;
-    //grid-template-columns: 1fr;
-    // grid-template-rows: 0.1fr 0.8fr 0.1fr;
     grid-template-areas: "header" "main" "footer";
-    ;
     grid-template-rows: 0.1fr 0.8fr 0.1fr;
     height: 100vh;
 }
@@ -24,7 +16,6 @@ section {
 
 #results {
     text-align: center;
-    // border-left: 10px solid green;
     p {
         font-size: 1.3em;
         margin-bottom: 30px;
