@@ -50,10 +50,7 @@ const displayTrips = async() => {
     })
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // your code goes here
-    displayTrips();
-}, false);
+document.addEventListener('DOMContentLoaded', () => displayTrips(), false);
 
 
 const saveTripsToCache = async(tripData) => {
@@ -95,17 +92,19 @@ async function displayOneTrip(trip, index, tripsUI) {
 
     const txt = `Trip to ${trip.location.name}, ${trip.location.countryCode} on ${trip.date} `;
     let mainDiv = document.createElement('div');
-    mainDiv.style.border = "1px solid grey";
-    mainDiv.style.marginBottom = "50px";
-    mainDiv.style.display = "flex";
-    mainDiv.style.flexDirection = "column";
+    // mainDiv.style.border = "1px solid grey";
+    // mainDiv.style.marginBottom = "50px";
+    // mainDiv.style.display = "flex";
+    // mainDiv.style.flexDirection = "column";
+    mainDiv.className = "card";
     //delete icon
     const del = document.createElement('a');
     del.innerText = "X";
     del.href = "#";
-    del.style.alignSelf = "flex-end";
-    del.style.margin = "10px";
-    del.style.textDecoration = "none";
+    // del.style.alignSelf = "flex-end";
+    // del.style.margin = "10px";
+    // del.style.textDecoration = "none";
+    del.className = "close"
     del.addEventListener('click', async(ev) => {
         console.log('deleting index:', trip.id)
 
@@ -121,34 +120,31 @@ async function displayOneTrip(trip, index, tripsUI) {
     //weather image
     if (trip.weather.icon) {
         let wDiv = document.createElement('div');
-        wDiv.style.display = "flex";
-        wDiv.style.alignItems = "center";
-        wDiv.style.justifyContent = "center";
+        wDiv.className = "weather"
         let img = document.createElement('img');
         img.src = `icons/${trip.weather.icon}.png`;
-        img.style.height = "80px";
+        // img.style.height = "80px";
         wDiv.appendChild(img);
         let span = document.createElement('div');
         span.innerHTML = `${trip.weather.temperature}&deg; with ${trip.weather.description}`;
         wDiv.appendChild(span);
         mainDiv.appendChild(wDiv);
     } else {
-        let span = document.createElement('div');
-        span.innerHTML = `No weather available!`;
-        span.style.fontSize = "1.3em";
-        span.style.color = "orange";
-        span.style.padding = "10px";
-        mainDiv.appendChild(span);
+        let missingDiv = document.createElement('div');
+        missingDiv.innerHTML = `No weather available!`;
+        missingDiv.className = "missing";
+        mainDiv.appendChild(missingDiv);
     }
     let picDiv = document.createElement('div');
     let img = null;
     if (trip.image && trip.image.webformatURL) {
+        let imgDiv = document.createElement('div');
         let img = document.createElement('img');
         //console.dir(trip.image)
         img.src = trip.image.webformatURL;
-        img.style.paddingLeft = "20px";
-        img.style.paddingRight = "20px";
-        mainDiv.appendChild(img);
+        imgDiv.className = "image";
+        imgDiv.appendChild(img);
+        mainDiv.appendChild(imgDiv);
 
         if (scrollLast == true) {
             img.addEventListener('load', () => {

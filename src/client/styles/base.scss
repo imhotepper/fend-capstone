@@ -4,10 +4,6 @@ body {
     min-height: 100vh;
 }
 
-main {
-    flex: 2;
-}
-
 section {
     max-width: 800px;
     margin: 50px auto;
@@ -27,6 +23,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0px;
+    padding: 0px;
 }
 
 footer {
@@ -40,6 +38,10 @@ form {
     border-radius: 3px;
     padding: 40px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 input {
@@ -47,9 +49,70 @@ input {
     // width: 90%;
     line-height: 26px;
     margin: 10px 0;
+    margin-left: 10px;
     font-size: 1.2em;
 }
 
-input[type=submit] {
-    font-size: 1.2em;
+.card {
+    border: 1px solid grey;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    .close {
+        align-self: flex-end;
+        margin: 10px;
+        text-decoration: none;
+    }
+    .weather {
+        order: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 40px;
+        }
+    }
+    .missing {
+        order: 2;
+        font-size: 1.3em;
+        color: orange;
+        padding: 10px;
+    }
+    .image {
+        order: 0;
+        img {
+            margin-left: 20px;
+            margin-right: 20px;
+            width: 80%;
+            border: 1px solid black;
+        }
+    }
+    p {
+        order: 1;
+        font-size: 1.3em;
+        font-weight: bolder;
+    }
+}
+
+@media (min-width: 768px) {
+    form {
+        flex-direction: row;
+    }
+    .card {
+        .weather {
+            order: 2;
+            img {
+                width: 60px;
+            }
+        }
+        .missing {
+            order: 2;
+        }
+        .image {
+            order: 1;
+        }
+        p {
+            order: 0;
+        }
+    }
 }
