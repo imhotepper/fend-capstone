@@ -52,6 +52,9 @@ app.get('/forcast', async(req, res) => {
 
     //TODO: validate the keys are present in the .env file!!!
 
+
+    //TODO: global error for the services....
+
     const geonamesUser = process.env.API_GEONAMES_USERNAME;
     let geoURL = `http://api.geonames.org/searchJSON?q=${place}&maxRows=1&username=${geonamesUser}`;
     var geoRes = await axios.get(geoURL,
@@ -61,6 +64,11 @@ app.get('/forcast', async(req, res) => {
     //get first record from array
     //TODO: check if present
     var locationGeo = geoRes.data.geonames[0];
+
+    if (!locationGeo) {
+        res.status(500).send();;
+    }
+
 
     let weather = {}
 
@@ -92,7 +100,9 @@ app.get('/forcast', async(req, res) => {
     const imgUrl = `https://pixabay.com/api/?key=${pixaBayKey}&q=${place}&image_type=photo&pretty=true`;
     var imgUrlRes = await axios.get(imgUrl, headers);
 
-    let imageUrl = imgUrlRes.data.hits[0];
+    let imageUrl = "";
+    if (imgUrlRes.data != null && imgUrlRes.data.hits != null && imgUrlRes.data.hits.length > 0)
+        imageUrl = imgUrlRes.data.hits[0];
 
     var dataToSave = {
         date: date,

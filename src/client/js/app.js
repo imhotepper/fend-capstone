@@ -60,7 +60,11 @@ const saveTripsToCache = async(tripData) => {
     if (!trips)
         trips = new Array();
     // add trip to trips
-    tripData.id = trips.length;
+    if (trips.length > 0)
+        tripData.id = Math.max(...trips.map(x => x.id)) + 1; // trips.length;
+    else
+        tripData.id = 1;
+    console.dir(tripData)
     trips.push(tripData);
     //save trips to localstorage
     localStorage.setItem('trips', JSON.stringify(trips));
@@ -74,11 +78,12 @@ const getTripsFromCache = async() => {
 }
 
 
-const delTripFromCache = async(index) => {
+const delTripFromCache = async(id) => {
     let trips = await getTripsFromCache();
     if (!trips) return null;
 
-    trips.splice(index, 1);
+    //old don't use trips.splice(index, 1);
+    trips = trips.filter(x => x.id != id);
     localStorage.setItem('trips', JSON.stringify(trips));
     await displayNoTrips();
 }
@@ -101,9 +106,10 @@ async function displayOneTrip(trip, index, tripsUI) {
     del.href = "#";
     del.className = "close"
     del.addEventListener('click', async(ev) => {
+        console.log(`curren truip id: ${trip.id}`)
         if (confirm(`delete trip to: ${trip.location.name}? `)) {
-            console.log('deleting index:', index);
-            await delTripFromCache(index);
+            console.log('deleting index:', trip.id);
+            await delTripFromCache(trip.id);
             await displayTrips();
         }
     });
