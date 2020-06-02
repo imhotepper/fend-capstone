@@ -1,7 +1,20 @@
+// body {
+//     display: flex;
+//     flex-direction: column;
+//     min-height: 100vh;
+// }
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    display: grid;
+    //grid-template-columns: 1fr;
+    // grid-template-rows: 0.1fr 0.8fr 0.1fr;
+    grid-template-areas: "header" "main" "footer";
+    ;
+    grid-template-rows: 0.1fr 0.8fr 0.1fr;
+    height: 100vh;
+}
+
+main {
+    grid-area: main;
 }
 
 section {
@@ -20,6 +33,7 @@ section {
 }
 
 header {
+    grid-area: header;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,9 +42,8 @@ header {
 }
 
 footer {
-    p {
-        text-align: center;
-    }
+    grid-area: footer;
+    text-align: center;
 }
 
 form {
@@ -51,6 +64,12 @@ input {
     margin: 10px 0;
     margin-left: 10px;
     font-size: 1.2em;
+}
+
+#noTrips {
+    h2 {
+        text-align: center;
+    }
 }
 
 .card {
