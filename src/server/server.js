@@ -39,79 +39,65 @@ app.listen(8080, function() {
 app.get('/forcast', async(req, res) => {
     console.log(`looking for: ${req.query.place} with date: ${req.query.date}`);
 
-    //TODO: get the coordinates from geonames
-
     const place = encodeURIComponent(req.query.place);
     const date = req.query.date;
 
+    try {
+        if (!place || !date) throw Error('Date or place invalid');
+        var dataToSave = await GetComputedData(place, date);
+        res.send(dataToSave);
+    } catch (error) {
+        console.error(error)
+        res.status(500).send();
+
+    }
+
+})
+
+async function GetComputedData(place, date) {
     const headers = {
         headers: {
             Accept: "application/json"
         }
-    };
-
-    //TODO: validate the keys are present in the .env file!!!
-
-
-    //TODO: global error for the services....
-
-    const geonamesUser = process.env.API_GEONAMES_USERNAME;
-    let geoURL = `http://api.geonames.org/searchJSON?q=${place}&maxRows=1&username=${geonamesUser}`;
-    var geoRes = await axios.get(geoURL,
-        headers
-    );
-
-    //get first record from array
-    //TODO: check if present
-    var locationGeo = geoRes.data.geonames[0];
-
-    if (!locationGeo) {
-        res.status(500).send();;
     }
-
+    const geonamesUser = process.env.API_GEONAMES_USERNAME
+    let geoURL = `http://api.geonames.org/searchJSON?q=${place}&maxRows=1&username=${geonamesUser}`
+    var geoRes = await axios.get(geoURL, headers)
+        //get first record from array
+        //TODO: check if present
+    var locationGeo = geoRes.data.geonames[0]
 
     let weather = {}
-
     if (getWeatherData(date) == true) {
-
         //TODO: get weather in date
-        const weatherBitKey = process.env.API_WEATHERBIT_KEY;
-        const wthrUrl =
-            `https://api.weatherbit.io/v2.0/forecast/daily?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
-
-        var wthrRes = await axios.get(wthrUrl, headers);
-
-        const weatherData = wthrRes.data.data[0];
-
+        const weatherBitKey = process.env.API_WEATHERBIT_KEY
+        const wthrUrl = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${locationGeo.lat}&lon=${locationGeo.lng}&key=${weatherBitKey}`
+        var wthrRes = await axios.get(wthrUrl, headers)
+        const weatherData = wthrRes.data.data[0]
         const onDate = wthrRes.data.data.find(x => x.datetime == date)
-
         if (onDate) {
-            weather.temperature = onDate.temp;
-            weather.min_temp = onDate.min_temp;
-            weather.max_temp = onDate.max_temp;
-            weather.icon = onDate.weather.icon;
-            weather.description = onDate.weather.description;
+            weather.temperature = onDate.temp
+            weather.min_temp = onDate.min_temp
+            weather.max_temp = onDate.max_temp
+            weather.icon = onDate.weather.icon
+            weather.description = onDate.weather.description
         }
     }
-
     //image url
-    const pixaBayKey = process.env.API_PIXELBAY_KEY;
-
-    const imgUrl = `https://pixabay.com/api/?key=${pixaBayKey}&q=${place}&image_type=photo&pretty=true`;
-    var imgUrlRes = await axios.get(imgUrl, headers);
-
-    let imageUrl = "";
+    const pixaBayKey = process.env.API_PIXELBAY_KEY
+    const imgUrl = `https://pixabay.com/api/?key=${pixaBayKey}&q=${place}&image_type=photo&pretty=true`
+    var imgUrlRes = await axios.get(imgUrl, headers)
+    let imageUrl = ""
     if (imgUrlRes.data != null && imgUrlRes.data.hits != null && imgUrlRes.data.hits.length > 0)
-        imageUrl = imgUrlRes.data.hits[0];
-
+        imageUrl = imgUrlRes.data.hits[0]
     var dataToSave = {
         date: date,
         location: locationGeo,
         weather: weather,
         image: imageUrl
     }
-    res.send(dataToSave);
-})
+    return dataToSave
+}
 
 function getWeatherData(date) {
     let dt = new Date(date)
